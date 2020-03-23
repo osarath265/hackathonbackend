@@ -61,7 +61,7 @@ router.post('/signup',(req,res,next)=>
     var mailOptions = {
         from: 'osarath265@gmail.com',
         to:req.body.email,
-        subject: 'Sending Email using Node.js',
+        subject: 'Flypr Verification',
         html: 'Hello    ' + user.username + ' please confirm your mail<a href="http://localhost:3000/auth/verifyemail/?id=' + user.checksum + '&&email=' + user.email + '"> click</a><br>'
 
     };
@@ -89,7 +89,7 @@ router.get('/verifyemail',(req,res,next)=>
                 if(result.checksum == tmp_id)
                 {
                     authdata.updateOne({email:tmp_email},{$set:{verified:true}},()=>{});
-                    return res.status(200).json({message:"verify status updated"})
+                    return res.status(200).sendFile('C:/Users/sarath/Desktop/flpyrbackend/verified.html');
                 }
                 else{
                     return res.status(404).json({message:"error is ambiguos"})
@@ -111,7 +111,7 @@ router.post('/login',(req,res,next)=>
         }
         else if(result.password == req.body.password)
         {
-            return res.status(200).json({message:"successfully logged in"});
+            return res.status(200).json({email:req.body.email});
         }
         else{
             return res.status(404).json({message:"invalid password"});
@@ -147,6 +147,19 @@ router.post('/forgotpasswordlink',(req,res,next)=>
             return res.status(200).json({email:req.body.email});
         }
     });
+})
+
+router.post('/resetpassword',(req,res,next)=>
+{
+    authdata.findOneAndUpdate({email:req.body.email},{$set:{password:req.body.password}}).exec()
+    .then(result=>
+        {
+            console.log(result);
+            return res.status(200).json({message:"password updated succesfully"});
+        })
+    .catch(err=>{
+        return res.status(404).json({ error: err});
+    })    
 })
 
 

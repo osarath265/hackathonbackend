@@ -12,9 +12,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
 const authRoute = require('./api/routes/auth');
+const boardRoute = require('./api/routes/boards');
+
 
 app.use('/auth',authRoute);
 
+app.use('/boards',boardRoute);
 
 app.listen(port,()=>
 {
